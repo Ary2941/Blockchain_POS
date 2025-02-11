@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Transaction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Blockchain Transaction System</h1>
+        <form id="transactionForm">
+            <label for="sender_private_key">Sender Private Key:</label>
+            <input type="text" id="sender_private_key" name="sender_private_key" required><br><br>
+
+
+            <label for="transaction_type">Transaction Type:</label>
+            <select id="transaction_type" name="transaction_type">
+                <option value="ENTRADA">ENTRADA</option>
+                <option value="SAIDA">SAIDA</option>
+                <option value="AJUSTE">AJUSTE</option>
+            </select><br><br>
+
+            <button type="submit">Submit Transaction</button>
+        </form>
+
+        <div id="responseMessage"></div>
+    </div>
+
+    <script>
+        document.getElementById("transactionForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const senderPrivateKey = document.getElementById("sender_private_key").value;
+            //const amount = document.getElementById("amount").value;
+            const transactionType = document.getElementById("transaction_type").value;
+
+            const formData = new FormData();
+            formData.append("sender_private_key", senderPrivateKey);
+            //formData.append("amount", amount);
+            formData.append("transaction_type", transactionType);
+
+            const response = await fetch('/send_transaction', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+            document.getElementById("responseMessage").innerText = result.message;
+        });
+    </script>
+</body>
+</html>
