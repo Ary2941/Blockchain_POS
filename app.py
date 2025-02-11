@@ -1,6 +1,7 @@
 import time
 from flask import Flask, render_template, request, jsonify
 import requests
+from blockchain.transaction.getAmount import getAmount
 from blockchain.transaction.wallet import Wallet
 from blockchain.utils.helpers import BlockchainUtils
 
@@ -20,7 +21,8 @@ def index():
 @app.route('/send_transaction', methods=['POST'])
 def send_transaction():
     sender_private_key = request.form['sender_private_key']
-    amount = time.time() #float(request.form['amount'])
+    amount = getAmount()
+
     print(f"timestamp got: {str(time.ctime(amount))}")
     trans_type = request.form['transaction_type']
     
