@@ -27,7 +27,7 @@ _Se "adjustement" é {}: a transação é tratada como não sendo ajuste_
 2. **pegar a hora atual do computador**
 3. **fazer uma média entre os "datetimes"**
 4. **retornar o timestamp**
-## **[ ] - Passos para mandar a Localização Atual**
+## **[x] - Passos para mandar a Localização Atual**
 1. **pegar posição atual do aparelho (via autorização do browser)** 
 2. **retornar latitude e longitude**
 ## **[ ] - Passos para Calcular as Horas Trabalhadas**
