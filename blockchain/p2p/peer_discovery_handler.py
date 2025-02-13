@@ -25,15 +25,18 @@ class PeerDiscoveryHandler:
             for peer in self.socket_communication.peers:
                 current_connections.append(f"{peer.ip}: {peer.port}")
             if not self.socket_communication.peers:
-                logger.info({"message": "No nodes connected"})
+                #logger.info({"message": "No nodes connected"}) #debug
+                pass
             else:
-                logger.info(
+                '''logger.info(
                     {
                         "message": "Node connection status",
                         "connections": f"Current connections: {current_connections}",
                         "whoami": self.socket_communication,
                     }
                 )
+                '''#debug
+                pass
             count += 1
             sleep_time = 15 if count < 10 else 600  # prevent excessive logging
             time.sleep(sleep_time)

@@ -1,34 +1,58 @@
+import time
 import requests
 
 from blockchain.transaction.wallet import Wallet
 from blockchain.utils.helpers import BlockchainUtils
 
 
-def post_transaction(sender, amount, type):
-    transaction = sender.create_transaction(amount, type)
+def post_transaction(sender, amount=None, type=None,employee_id=None,location=None,replacing_id=None,replacement_reason=None,adjusted_by=None):
+    transaction = sender.create_transaction(amount, type,employee_id,location,replacing_id,replacement_reason,adjusted_by)
     url = "http://localhost:8050/api/v1/transaction/create/"
     package = {"transaction": BlockchainUtils.encode(transaction)}
-    response = requests.post(url, json=package, timeout=15)
+    response = requests.post(url, json=package, timeout=120)
     print(response.text)
 
 
 if __name__ == "__main__":
     john = Wallet()
+    john.from_key("./keys/node1_private_key.pem")
+
     jane = Wallet()
-    jane.from_key("./keys/staker_private_key.pem")
-
-    exchange = Wallet()
-
+    jane.from_key("./keys/node2_private_key.pem")
     # Block size: 2 transactions / block
 
     # Forger: Genesis
-    post_transaction(exchange, 9, "ENTRADA")
-    post_transaction(john, 10, "ENTRADA")
-    post_transaction(jane, 6, "ENTRADA")
-    post_transaction(exchange, 5, "SAIDA")
-    post_transaction(john, 20, "SAIDA")
-    post_transaction(jane, 8, "SAIDA")
+    post_transaction(john, time.time(), "ENTRADA","1234","1,2")
+    post_transaction(john, time.time(), "ENTRADA","1234","1,2","1","Logou atrasado","id")
 
+    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, time.time(), "ENTRADA")
+
+    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, time.time(), "ENTRADA")
+
+    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, time.time(), "ENTRADA")
+
+    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, time.time(), "ENTRADA")
+
+    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, time.time(), "ENTRADA")
+
+    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, time.time(), "ENTRADA")
+
+    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, time.time(), "ENTRADA")
+
+    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, time.time(), "ENTRADA")
+    
+    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, time.time(), "ENTRADA")
+
+#TODO: fix freezing on third transaction
 
 '''
 

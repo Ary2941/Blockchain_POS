@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Localização Atual</title>
+</head>
+<body>
+    <h1>Sua Localização</h1>
+    <button onclick="getLocation()">Obter Localização</button>
+    <p id="location"></p>
+
+    <script>
+        function getLocation() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(async function(position) {
+                    let latitude = position.coords.latitude;
+                    let longitude = position.coords.longitude;
+
+                    document.getElementById("location").innerText = `Latitude: ${latitude}, Longitude: ${longitude}`;
+
+                    // Enviar para o backend
+                    let response = await fetch("/location", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ latitude, longitude })
+                    });
+
+                    let result = await response.json();
+                    console.log(result.message);
+                });
+            } else {
+                alert("Geolocalização não suportada no seu navegador.");
+            }
+        }
+    </script>
+</body>
+</html>

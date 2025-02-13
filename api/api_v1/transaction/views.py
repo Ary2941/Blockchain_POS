@@ -24,5 +24,6 @@ async def create_transaction(request: Request):
         raise HTTPException(status_code=400, detail="Missing transaction value")
 
     transaction = BlockchainUtils.decode(payload["transaction"])
+    #BREAKPOINT
     node.handle_transaction(transaction)
     return {"message": "Received transaction"}

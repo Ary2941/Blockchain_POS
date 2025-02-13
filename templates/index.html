@@ -10,36 +10,63 @@
     <div class="container">
         <h1>Blockchain Transaction System</h1>
         <form id="transactionForm">
-            <label for="sender_private_key">Sender Private Key:</label>
-            <input type="text" id="sender_private_key" name="sender_private_key" required><br><br>
 
+            <label for="employee_id">Employee ID:</label>
+            <input type="text" id="employee_id" name="employee_id" placeholder="Employee ID" required><br><br>
 
             <label for="transaction_type">Transaction Type:</label>
             <select id="transaction_type" name="transaction_type">
                 <option value="ENTRADA">ENTRADA</option>
                 <option value="SAIDA">SAIDA</option>
-                <option value="AJUSTE">AJUSTE</option>
             </select><br><br>
-
-            <button type="submit">Submit Transaction</button>
+            <p id="locationStatus"></p> <!-- Exibindo o status da localização -->
+            <button type="submit">CONFIRMAR</button>
+        
         </form>
 
         <div id="responseMessage"></div>
     </div>
 
     <script>
-        document.getElementById("transactionForm").addEventListener("submit", async function(event) {
-            event.preventDefault();
 
-            const senderPrivateKey = document.getElementById("sender_private_key").value;
-            //const amount = document.getElementById("amount").value;
+    async function getLocation() {
+        return new Promise((resolve, reject) => {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        let location = `${position.coords.latitude},${position.coords.longitude}`; // Formato "latitude,longitude"
+                        resolve(location); // Retorna a string com as coordenadas
+                    },
+                    (error) => {
+                        console.error("Erro ao obter localização:", error);
+                        reject(error);
+                    }
+                );
+            } else {
+                reject(new Error("Geolocalização não suportada no seu navegador."));
+            }
+        });
+    }
+
+    document.getElementById("transactionForm").addEventListener("submit", async function(event) {
+        event.preventDefault(); // Impede o envio padrão do formulário
+        
+        try {
+            const location = await getLocation(); // Agora 'location' será uma string, como "40.7128,-74.0060"
+            // Atualizando o status da localização
+            document.getElementById("locationStatus").innerText = "Localização obtida: " + location;
+
+            // Obtendo os outros campos do formulário
+            const employee_id = document.getElementById("employee_id").value;
             const transactionType = document.getElementById("transaction_type").value;
 
+            // Criando o FormData
             const formData = new FormData();
-            formData.append("sender_private_key", senderPrivateKey);
-            //formData.append("amount", amount);
+            formData.append("employee_id", employee_id);
             formData.append("transaction_type", transactionType);
+            formData.append("location", location); // Envia a string "latitude,longitude"
 
+            // Enviando a requisição
             const response = await fetch('/send_transaction', {
                 method: 'POST',
                 body: formData,
@@ -47,7 +74,13 @@
 
             const result = await response.json();
             document.getElementById("responseMessage").innerText = result.message;
-        });
+        } catch (error) {
+            console.error("Erro ao obter localização:", error);
+            document.getElementById("locationStatus").innerText = "Localização não determinada";
+            document.getElementById("responseMessage").innerText = "Erro ao obter localização.";
+        }
+    });
+
     </script>
 </body>
 </html>
