@@ -13,8 +13,8 @@ sender_private_key = "./keys/genesis_private_key.pem"
 
 app = Flask(__name__)
 
-def post_transaction(sender, amount, type,employee_id,location):
-    transaction = sender.create_transaction(amount, type,employee_id,location)
+def post_transaction(sender, amount, type,employee_id,location,replacing_id):
+    transaction = sender.create_transaction(amount, type,employee_id,location,replacing_id)
     url = "http://localhost:8050/api/v1/transaction/create/"
     package = {"transaction": BlockchainUtils.encode(transaction)}
     response = requests.post(url, json=package, timeout=15)
@@ -33,7 +33,8 @@ def send_transaction():
     
     # Pegando a string de localização e separando as coordenadas
     location_str = request.form['location']
-
+    replacing_id = request.form['replacing_id']
+    
     print(f"location got: {location_str}")
     print(f"timestamp got: {str(time.ctime(amount))}")
 
@@ -46,7 +47,7 @@ def send_transaction():
     sender.from_key(sender_private_key)
 
 
-    response = post_transaction(sender, amount, transaction_type,employee_id,location_str)
+    response = post_transaction(sender, amount, transaction_type,employee_id,location_str,replacing_id)
     return jsonify({"message": response})
 
 if __name__ == "__main__":

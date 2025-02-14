@@ -1,4 +1,5 @@
 import copy
+from datetime import datetime
 
 from api.main import NodeAPI
 from blockchain.blockchain import Blockchain
@@ -9,6 +10,9 @@ from blockchain.transaction.wallet import Wallet
 from blockchain.utils.helpers import BlockchainUtils
 from blockchain.utils.logger import logger
 
+def nownownow ():
+    agora = datetime.now()
+    return agora.strftime("%H:%M:%S")+ agora.strftime("%f")[:3]
 
 class Node:
     def __init__(self, ip, port, key=None):
@@ -52,6 +56,7 @@ class Node:
         block_hash = block.payload()
         signature = block.signature
 
+        block_is_original = self.blockchain.block_is_original(block)
         block_count_valid = self.blockchain.block_count_valid(block)
         last_block_hash_valid = self.blockchain.last_block_hash_valid(block)
         forger_valid = self.blockchain.forger_valid(block)
@@ -59,20 +64,24 @@ class Node:
         signature_valid = Wallet.signature_valid(block_hash, signature, forger)
 
         if not block_count_valid:
+            # if is the same block DON'T request chain
             self.request_chain()
-
+            
         if (
             last_block_hash_valid
             and forger_valid
             and transactions_valid
             and signature_valid
+            and block_is_original
         ):
+            print(f"block{block.block_count}")
             self.blockchain.add_block(block)
             self.transaction_pool.remove_from_pool(block.transactions)
             message = Message(self.p2p.socket_connector, "BLOCK", block)
             self.p2p.broadcast(BlockchainUtils.encode(message))
 
     def request_chain(self):
+        print(f"{nownownow()} > chain request ")
         message = Message(self.p2p.socket_connector, "BLOCKCHAINREQUEST", None)
         encoded_message = BlockchainUtils.encode(message)
         self.p2p.broadcast(encoded_message)
@@ -99,6 +108,7 @@ class Node:
             block = self.blockchain.create_block(
                 self.transaction_pool.transactions, self.wallet
             )
+            ''' #DEBUG LOGGER
             logger.info(
                 {
                     "message": "Next forger chosen",
@@ -106,6 +116,7 @@ class Node:
                     "whoami": self.p2p,
                 }
             )
+            '''
             self.transaction_pool.remove_from_pool(self.transaction_pool.transactions)
             message = Message(self.p2p.socket_connector, "BLOCK", block)
             self.p2p.broadcast(BlockchainUtils.encode(message))

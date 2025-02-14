@@ -87,3 +87,14 @@ __Através de [http://localhost:{node_port}/api/v1/blockchain/] consegue-se visu
 ```sh
 python blockchain/frontend/app.py
 ```
+
+## Testes a se fazer
+
+entrou por uma transação
+saiu por outra
+
+entrou duas vezes seguidas
+saiu duas vezes seguidas
+
+só entrou
+só saiu

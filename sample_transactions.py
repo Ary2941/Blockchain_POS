@@ -22,35 +22,34 @@ if __name__ == "__main__":
     # Block size: 2 transactions / block
 
     # Forger: Genesis
-    post_transaction(john, time.time(), "ENTRADA","1234","1,2")
-    post_transaction(john, time.time(), "ENTRADA","1234","1,2","1","Logou atrasado","id")
+    post_transaction(john, 1, "ENTRADA","1","1,2")
+    post_transaction(john, 2, "ENTRADA","1","1,2","1","Logou atrasado","id")
 
-    post_transaction(john, time.time(), "ENTRADA")
-    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, 3, "ENTRADA","2")
+    post_transaction(john, 4, "ENTRADA","2")
 
-    post_transaction(john, time.time(), "ENTRADA")
-    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, 5, "ENTRADA","3")
+    post_transaction(john, 6, "ENTRADA","3")
 
-    post_transaction(john, time.time(), "ENTRADA")
-    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, 7, "ENTRADA","4")
+    post_transaction(john, 8, "ENTRADA","4")
 
-    post_transaction(john, time.time(), "ENTRADA")
-    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, 9, "ENTRADA","5")
+    post_transaction(john, 10, "ENTRADA","5")
 
-    post_transaction(john, time.time(), "ENTRADA")
-    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, 11, "ENTRADA","6")
+    post_transaction(john, 12, "ENTRADA","6")
 
-    post_transaction(john, time.time(), "ENTRADA")
-    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, 13, "ENTRADA","7")
+    post_transaction(john, 14, "ENTRADA","7")
 
-    post_transaction(john, time.time(), "ENTRADA")
-    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, 15, "ENTRADA","8")
+    post_transaction(john, 16, "ENTRADA","8")
 
-    post_transaction(john, time.time(), "ENTRADA")
-    post_transaction(john, time.time(), "ENTRADA")
+    post_transaction(john, 17, "ENTRADA","9")
+    post_transaction(john, 18, "ENTRADA","9")
     
-    post_transaction(john, time.time(), "ENTRADA")
-    post_transaction(john, time.time(), "ENTRADA")
+
 
 #TODO: fix freezing on third transaction
 

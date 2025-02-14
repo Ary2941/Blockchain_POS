@@ -6,6 +6,7 @@ from blockchain.utils.logger import logger
 class LogMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         response = await call_next(request)
+        ''' #DEBUG LOGGER
         logger.info(
             f"{request.method} {response.status_code} {request.url.path}",
             extra={
@@ -16,4 +17,5 @@ class LogMiddleware(BaseHTTPMiddleware):
                 }
             },
         )
+        '''
         return response

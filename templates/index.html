@@ -19,6 +19,13 @@
                 <option value="ENTRADA">ENTRADA</option>
                 <option value="SAIDA">SAIDA</option>
             </select><br><br>
+
+            <label for="replacing_id">Ajustar transação:</label>
+            <input type="text" id="replacing_id" name="replacing_id" placeholder="transaction_id"><br><br>
+
+
+
+
             <p id="locationStatus"></p> <!-- Exibindo o status da localização -->
             <button type="submit">CONFIRMAR</button>
         
@@ -59,12 +66,14 @@
             // Obtendo os outros campos do formulário
             const employee_id = document.getElementById("employee_id").value;
             const transactionType = document.getElementById("transaction_type").value;
-
+            const replacing_id = document.getElementById("replacing_id")?.value || null;
             // Criando o FormData
             const formData = new FormData();
             formData.append("employee_id", employee_id);
             formData.append("transaction_type", transactionType);
             formData.append("location", location); // Envia a string "latitude,longitude"
+            formData.append("replacing_id", replacing_id); // Envia a string "latitude,longitude"
+
 
             // Enviando a requisição
             const response = await fetch('/send_transaction', {

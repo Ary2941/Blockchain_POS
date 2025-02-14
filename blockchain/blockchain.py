@@ -14,6 +14,7 @@ class Blockchain:
 
     def add_block(self, block):
         self.execute_transactions(block.transactions)
+        print(f"✅ Bloco {block.block_count} adicionado!")
         self.blocks.append(block)
 
     def to_dict(self):
@@ -23,6 +24,11 @@ class Blockchain:
             blocks_readable.append(block.to_dict())
         data["blocks"] = blocks_readable
         return data
+
+    def block_is_original(self, block):
+        if self.blocks[-1].signature == block.signature:
+            return False
+        return True
 
     def block_count_valid(self, block):
         if self.blocks[-1].block_count == block.block_count - 1:
