@@ -90,11 +90,4 @@ python blockchain/frontend/app.py
 
 ## Testes a se fazer
 
-entrou por uma transação
-saiu por outra
-
-entrou duas vezes seguidas
-saiu duas vezes seguidas
-
-só entrou
-só saiu
+bruh
