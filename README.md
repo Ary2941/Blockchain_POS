@@ -90,4 +90,4 @@ python blockchain/frontend/app.py
 
 ## Testes a se fazer
 
-bruh
+tomorow I promisse
