@@ -4,8 +4,6 @@ class TransactionPool:
 
     def add_transaction(self, transaction):
         self.transactions.append(transaction)
-        print(f"✅ transação {len(self.transactions)} adicionada!")
-
 
     def transaction_exists(self, transaction):
         for pool_transaction in self.transactions:

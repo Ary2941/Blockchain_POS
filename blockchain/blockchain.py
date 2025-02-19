@@ -70,7 +70,6 @@ class Blockchain:
         if transaction.type == "ENTRADA":
             sender = transaction.sender_public_key
             amount = transaction.amount
-            self.pos.update(sender, 1)
             self.account_model.update_balance(sender, -amount)
 
         if transaction.type == "SAIDA":

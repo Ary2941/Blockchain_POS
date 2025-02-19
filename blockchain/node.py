@@ -43,6 +43,7 @@ class Node:
         transaction_in_block = self.blockchain.transaction_exists(transaction)
 
         if not transaction_exists and not transaction_in_block and signature_valid:
+            print(f"✅ transação {len(transaction.id)} adicionada!")
             self.transaction_pool.add_transaction(transaction)
             message = Message(self.p2p.socket_connector, "TRANSACTION", transaction)
             self.p2p.broadcast(BlockchainUtils.encode(message))
@@ -74,30 +75,48 @@ class Node:
             and signature_valid
             and block_is_original
         ):
-            print(f"block{block.block_count}")
+            print(f"🟢 Bloco {block.block_count} adicionado!")
             self.blockchain.add_block(block)
             self.transaction_pool.remove_from_pool(block.transactions)
             message = Message(self.p2p.socket_connector, "BLOCK", block)
             self.p2p.broadcast(BlockchainUtils.encode(message))
 
     def request_chain(self):
-        print(f"{nownownow()} > chain request ")
         message = Message(self.p2p.socket_connector, "BLOCKCHAINREQUEST", None)
         encoded_message = BlockchainUtils.encode(message)
         self.p2p.broadcast(encoded_message)
 
+    def nogemini(self): #TODO: otimizar essa parte do código
+        seen_signatures = set()  # Conjunto para armazenar assinaturas já vistas
+        newblocks = []
+
+        for block in self.blockchain.blocks:
+            signature = block.signature
+            #print(str(signature)[:6])
+            if signature in seen_signatures:
+                print(f"🔴 Duplicated block {signature} discarded")
+            else:
+                seen_signatures.add(signature)  # Adiciona ao conjunto
+                newblocks.append(block)
+        print(f"⬆️ sending blockchain with {len(self.blockchain.blocks)-1} txs")
+
+        self.blockchain.blocks = newblocks
+        return self.blockchain
+
     def handle_blockchain_request(self, requesting_node):
-        message = Message(self.p2p.socket_connector, "BLOCKCHAIN", self.blockchain)
+        message = Message(self.p2p.socket_connector, "BLOCKCHAIN", self.nogemini())
         encoded_message = BlockchainUtils.encode(message)
         self.p2p.send(requesting_node, encoded_message)
 
     def handle_blockchain(self, blockchain):
+        print(f"⬇️ blockchain received with {len(blockchain.blocks)-1} txs")
         local_blockchain_copy = copy.deepcopy(self.blockchain)
         local_block_count = len(local_blockchain_copy.blocks)
         received_chain_block_count = len(blockchain.blocks)
         if local_block_count < received_chain_block_count:
             for block_number, block in enumerate(blockchain.blocks):
                 if block_number >= local_block_count:
+                    print(f"✅ Bloco {block.block_count} adicionado!")
                     local_blockchain_copy.add_block(block)
                     self.transaction_pool.remove_from_pool(block.transactions)
             self.blockchain = local_blockchain_copy
