@@ -12,7 +12,7 @@
 	"adjusted_by":        "employee_id",
 	"id":"8d545cdde7ee11ef81308cb0e9c2871b",
 	"signature":"1121481898640eece4c22c548b9aadd..."
-	},
+}
 ```
 
 _Se "replacing_id" é None: a transação é tratada como não sendo ajuste_
@@ -74,20 +74,53 @@ pip install -r requirements/dev.txt
 ## Executando nós
 ```sh
 # Terminal 1
-python run_node.py --ip=localhost --node_port=8010 --api_port=8050 --key_file=./keys/genesis_private_key.pem
+cd blockchain ; python run_node.py --ip=localhost --node_port=8010 --api_port=8050 --key_file=./keys/genesis_private_key.pem
 # Terminal 2
-python run_node.py --ip=localhost --node_port=8011 --api_port=8051 --key_file=./keys/node1_private_key.pem
+cd blockchain ; python run_node.py --ip=localhost --node_port=8011 --api_port=8051 --key_file=./keys/node1_private_key.pem
 # Terminal 3
-python run_node.py --ip=localhost --node_port=8012 --api_port=8052 --key_file=./keys/node2_private_key.pem
+cd blockchain ; python run_node.py --ip=localhost --node_port=8012 --api_port=8052 --key_file=./keys/node2_private_key.pem
+# populate with seeds
+cd blockchain ; python sample_transactions.py
 ```
-__Através de [http://localhost:{node_port}/api/v1/blockchain/] consegue-se visualizar a blockchain pelo nó com a node_port fornecida__
+__Visualizar a blockchain pelo nó com a node_port fornecida__
+
+```sh
+http://localhost:8010/api/v1/blockchain/
+```
+__Visualizar todas as transações válidas__
+
+```sh
+http://localhost:8051/api/v1/transaction/
+http://localhost:8051/api/v1/transaction?employee_id=123
+
+```
+__Visualizar carga horária__
+
+```sh
+http://localhost:8050/api/v1/transaction/CH?employee_id=123
+```
+
+
+
+__Através de [http://localhost:8010/transaction/CH/?employee_id=<employee_id>] consegue-se visualizar a blockchain pelo nó com a node_port fornecida__
 
 ## Testando transações
 
 ```sh
-python blockchain/frontend/app.py
+cd blockchain ; python app.py
 ```
 
 ## Testes a se fazer
 
-tomorow I promisse
+entrou por uma transação
+saiu por outra
+
+entrou duas vezes seguidas
+saiu duas vezes seguidas
+
+só entrou
+só saiu
+
+## TODO:
+  [ ] - writing transactions on a file
+  [ ] - using a file as a memory to a blockchain

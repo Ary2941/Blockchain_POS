@@ -43,7 +43,7 @@ class Node:
         transaction_in_block = self.blockchain.transaction_exists(transaction)
 
         if not transaction_exists and not transaction_in_block and signature_valid:
-            print(f"✅ transação {len(transaction.id)} adicionada!")
+            print(f"✅ transação {str(transaction.id)[:6]} adicionada!")
             self.transaction_pool.add_transaction(transaction)
             message = Message(self.p2p.socket_connector, "TRANSACTION", transaction)
             self.p2p.broadcast(BlockchainUtils.encode(message))
@@ -109,10 +109,10 @@ class Node:
         self.p2p.send(requesting_node, encoded_message)
 
     def handle_blockchain(self, blockchain):
-        print(f"⬇️ blockchain received with {len(blockchain.blocks)-1} txs")
         local_blockchain_copy = copy.deepcopy(self.blockchain)
         local_block_count = len(local_blockchain_copy.blocks)
-        received_chain_block_count = len(blockchain.blocks)
+        received_chain_block_count = len(blockchain.blocks)        
+        print(f"⬇️ blockchain received with {received_chain_block_count-1} txs (ours: {local_block_count-1})")
         if local_block_count < received_chain_block_count:
             for block_number, block in enumerate(blockchain.blocks):
                 if block_number >= local_block_count:

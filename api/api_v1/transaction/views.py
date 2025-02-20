@@ -99,7 +99,7 @@ async def blockchain(request: Request, employee_id: str = Query(None)):
     else:
         filtered_transactions = all_transactions
 
-    return {"work_hours": work_hours, "transactions": filtered_transactions}
+    return {"seconds_worked": work_hours, "transactions": filtered_transactions}
 
 
 
