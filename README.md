@@ -85,7 +85,7 @@ cd blockchain ; python sample_transactions.py
 __Visualizar a blockchain pelo nó com a node_port fornecida__
 
 ```sh
-http://localhost:8010/api/v1/blockchain/
+http://localhost:8050/api/v1/blockchain/
 ```
 __Visualizar todas as transações válidas__
 

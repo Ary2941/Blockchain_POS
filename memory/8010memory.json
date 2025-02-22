@@ -1,0 +1,12 @@
+{
+    "blocks": [
+        {
+            "transactions": [],
+            "last_hash": "genesis_hash",
+            "forger": "genesis",
+            "block_count": 0,
+            "timestamp": 0,
+            "signature": ""
+        }
+    ]
+}

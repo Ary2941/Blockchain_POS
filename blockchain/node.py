@@ -9,6 +9,7 @@ from blockchain.transaction.transaction_pool import TransactionPool
 from blockchain.transaction.wallet import Wallet
 from blockchain.utils.helpers import BlockchainUtils
 from blockchain.utils.logger import logger
+from blockchain.hippocampus.hippocampus import Hippocampus #HIPPOCAMPUS
 
 def nownownow ():
     agora = datetime.now()
@@ -22,6 +23,7 @@ class Node:
         self.transaction_pool = TransactionPool()
         self.wallet = Wallet()
         self.blockchain = Blockchain()
+        self.hippocampus = Hippocampus(self.port) #HIPPOCAMPUS
         if key:
             self.wallet.from_key(key)
 
@@ -77,9 +79,17 @@ class Node:
         ):
             print(f"🟢 Bloco {block.block_count} adicionado!")
             self.blockchain.add_block(block)
-            self.transaction_pool.remove_from_pool(block.transactions)
-            message = Message(self.p2p.socket_connector, "BLOCK", block)
-            self.p2p.broadcast(BlockchainUtils.encode(message))
+            curr = len(self.blockchain.blocks)
+            self.nogemini()
+            if curr == len(self.blockchain.blocks):
+
+                self.transaction_pool.remove_from_pool(block.transactions)
+                self.hippocampus.update_memory(block.to_dict())  #HIPPOCAMPUS
+
+                message = Message(self.p2p.socket_connector, "BLOCK", block)
+                self.p2p.broadcast(BlockchainUtils.encode(message))
+                print(f"⬆️ sending blockchain with {len(self.blockchain.blocks)-1} txs")
+
 
     def request_chain(self):
         message = Message(self.p2p.socket_connector, "BLOCKCHAINREQUEST", None)
@@ -98,13 +108,12 @@ class Node:
             else:
                 seen_signatures.add(signature)  # Adiciona ao conjunto
                 newblocks.append(block)
-        print(f"⬆️ sending blockchain with {len(self.blockchain.blocks)-1} txs")
 
         self.blockchain.blocks = newblocks
         return self.blockchain
 
     def handle_blockchain_request(self, requesting_node):
-        message = Message(self.p2p.socket_connector, "BLOCKCHAIN", self.nogemini())
+        message = Message(self.p2p.socket_connector, "BLOCKCHAIN", self.blockchain) #se blockdup: trocar self.blockchain por self.nogemini()
         encoded_message = BlockchainUtils.encode(message)
         self.p2p.send(requesting_node, encoded_message)
 
@@ -116,7 +125,7 @@ class Node:
         if local_block_count < received_chain_block_count:
             for block_number, block in enumerate(blockchain.blocks):
                 if block_number >= local_block_count:
-                    print(f"✅ Bloco {block.block_count} adicionado!")
+                    print(f"🟢 Block {block.block_count} added from blockchian received!")
                     local_blockchain_copy.add_block(block)
                     self.transaction_pool.remove_from_pool(block.transactions)
             self.blockchain = local_blockchain_copy
