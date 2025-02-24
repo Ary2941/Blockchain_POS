@@ -1,6 +1,9 @@
 import json
 import os
 
+from blockchain.block import Block
+from blockchain.transaction.transaction import Transaction
+
 class Hippocampus:
     def __init__(self,arg):
         self.caminho_arquivo = "./memory/"+str(arg) + "memory.json" 
@@ -16,8 +19,6 @@ class Hippocampus:
                 if not isinstance(self.dados, dict) or "blocks" not in self.dados:
                     raise ValueError("Formato inválido de memória. Criando nova...")
                 
-                print(f"DONE DONE {self.dados}\n{self.caminho_arquivo}")
-
         except (FileNotFoundError, json.decoder.JSONDecodeError, ValueError):
             print("Creating memory...")
             self.dados = {
@@ -31,7 +32,6 @@ class Hippocampus:
                 }]
             }
             self.salvar_memoria()
-            print("DONE")
 
     def salvar_memoria(self):
         """Garante que o JSON seja salvo corretamente, evitando corrupção."""
@@ -46,3 +46,29 @@ class Hippocampus:
         self.dados["blocks"].append(block)
         self.salvar_memoria()
         print("Bloco adicionado com sucesso!")
+
+    def dejavu(self):
+        blocks = []
+        for block in self.dados["blocks"]:
+            transactions = []
+            for transaction in block["transactions"]:
+                
+                tx = Transaction(
+                    transaction["sender_public_key"], 
+                    transaction["amount"],
+                    transaction["type"],
+                    transaction["employee_id"],
+                    transaction["location"],
+                    transaction["replacing_id"],
+                    transaction["replacement_reason"],
+                    transaction["adjusted_by"]
+                )
+                tx.id = transaction["id"]
+                tx.signature = transaction["signature"]
+                transactions.append(tx)
+            blk = Block(transactions, block["last_hash"], block["forger"], block["block_count"])
+            blk.timestamp = block["timestamp"]
+            blk.signature = block["signature"]
+            blocks.append(blk)
+        return blocks
+        

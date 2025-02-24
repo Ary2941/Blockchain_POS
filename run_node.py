@@ -34,4 +34,5 @@ if __name__ == "__main__":
     node = Node(args.ip, args.node_port, args.key_file)
 
     node.start_p2p()
+    node.request_chain() #to update as node enters
     node.start_node_api(args.api_port)

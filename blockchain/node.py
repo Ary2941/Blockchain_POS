@@ -24,6 +24,7 @@ class Node:
         self.wallet = Wallet()
         self.blockchain = Blockchain()
         self.hippocampus = Hippocampus(self.port) #HIPPOCAMPUS
+        self.blockchain.blocks = self.hippocampus.dejavu() #HIPPOCAMPUS
         if key:
             self.wallet.from_key(key)
 
@@ -126,11 +127,13 @@ class Node:
             for block_number, block in enumerate(blockchain.blocks):
                 if block_number >= local_block_count:
                     print(f"🟢 Block {block.block_count} added from blockchian received!")
+                    self.hippocampus.update_memory(block.to_dict()) #hippocampus
                     local_blockchain_copy.add_block(block)
                     self.transaction_pool.remove_from_pool(block.transactions)
             self.blockchain = local_blockchain_copy
 
     def forge(self):
+        print("FORGE!!")
         forger = self.blockchain.next_forger()
         if forger == self.wallet.public_key_string():
             block = self.blockchain.create_block(
@@ -146,5 +149,6 @@ class Node:
             )
             '''
             self.transaction_pool.remove_from_pool(self.transaction_pool.transactions)
+            self.hippocampus.update_memory(block.to_dict()) #hippocampus
             message = Message(self.p2p.socket_connector, "BLOCK", block)
             self.p2p.broadcast(BlockchainUtils.encode(message))

@@ -80,7 +80,7 @@ cd blockchain ; python run_node.py --ip=localhost --node_port=8011 --api_port=80
 # Terminal 3
 cd blockchain ; python run_node.py --ip=localhost --node_port=8012 --api_port=8052 --key_file=./keys/node2_private_key.pem
 # populate with seeds
-cd blockchain ; python sample_transactions.py
+cd blockchain ; python sample_transactions.py ; cd ..
 ```
 __Visualizar a blockchain pelo nó com a node_port fornecida__
 
@@ -122,5 +122,5 @@ só entrou
 só saiu
 
 ## TODO:
-  [ ] - writing transactions on a file
-  [ ] - using a file as a memory to a blockchain
+  [x] - writing transactions on a file
+  [x] - using a file as a memory to a blockchain
