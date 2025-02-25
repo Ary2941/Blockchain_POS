@@ -126,4 +126,5 @@ async def create_transaction(request: Request):
     transaction = BlockchainUtils.decode(payload["transaction"])
     #BREAKPOINT
     node.handle_transaction(transaction)
+
     return {"message": "Received transaction"}

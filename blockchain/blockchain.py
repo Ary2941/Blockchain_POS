@@ -79,6 +79,7 @@ class Blockchain:
     def next_forger(self):
         last_block_hash = BlockchainUtils.hash(self.blocks[-1].payload()).hex()
         next_forger = self.pos.forger(last_block_hash)
+        print(f"NEXT FORGER{next_forger}")
         return next_forger
 
     def create_block(self, transactions_from_pool, forger_wallet):

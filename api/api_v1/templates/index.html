@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blockchain Transaction</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
@@ -57,32 +56,41 @@
 
     document.getElementById("transactionForm").addEventListener("submit", async function(event) {
         event.preventDefault(); // Impede o envio padrão do formulário
+        document.getElementById("responseMessage").innerText = "...";
+
         
         try {
-            const location = await getLocation(); // Agora 'location' será uma string, como "40.7128,-74.0060"
-            // Atualizando o status da localização
+            const location = await getLocation(); // Obtém a localização como string "latitude,longitude"
             document.getElementById("locationStatus").innerText = "Localização obtida: " + location;
 
-            // Obtendo os outros campos do formulário
+            // Obtendo os valores do formulário
+            const key_pair = "./keys/genesis_private_key.pem";
             const employee_id = document.getElementById("employee_id").value;
             const transactionType = document.getElementById("transaction_type").value;
-            const replacing_id = document.getElementById("replacing_id")?.value || null;
-            // Criando o FormData
-            const formData = new FormData();
-            formData.append("employee_id", employee_id);
-            formData.append("transaction_type", transactionType);
-            formData.append("location", location); // Envia a string "latitude,longitude"
-            formData.append("replacing_id", replacing_id); // Envia a string "latitude,longitude"
+            const replacing_id = document.getElementById("replacing_id")?.value || "";
+
+            // Criando o objeto JSON
+            const transactionData = {
+                key_pair: key_pair,
+                employee_id: employee_id,
+                transaction_type: transactionType,
+                location: location,
+                replacing_id: replacing_id
+            };
+            try{JSON.stringify(transactionData)}catch(e){console.log(e)}
 
 
-            // Enviando a requisição
+            // Enviando a requisição como JSON
             const response = await fetch('/send_transaction', {
                 method: 'POST',
-                body: formData,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(transactionData)
             });
 
             const result = await response.json();
-            document.getElementById("responseMessage").innerText = result.message;
+            document.getElementById("responseMessage").innerText = "transaction sent";
         } catch (error) {
             console.error("Erro ao obter localização:", error);
             document.getElementById("locationStatus").innerText = "Localização não determinada";

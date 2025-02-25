@@ -10,6 +10,7 @@ from blockchain.utils.helpers import BlockchainUtils
 
 
 sender_private_key = "./keys/genesis_private_key.pem"
+session = requests.Session()
 
 app = Flask(__name__)
 
@@ -17,8 +18,8 @@ def post_transaction(sender, amount, type,employee_id,location,replacing_id):
     transaction = sender.create_transaction(amount, type,employee_id,location,replacing_id)
     url = "http://localhost:8050/api/v1/transaction/create/"
     package = {"transaction": BlockchainUtils.encode(transaction)}
-    response = requests.post(url, json=package, timeout=15)
-    return response.text
+    session.post(url, json=package) #response = requests.post(url, json=package, timeout=15)
+    return {"message": "Transaction sent"}
 
 @app.route('/')
 def index():

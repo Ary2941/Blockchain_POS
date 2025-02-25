@@ -114,6 +114,7 @@ class Node:
         return self.blockchain
 
     def handle_blockchain_request(self, requesting_node):
+        print(f"REQUESTING_NODE{requesting_node}")
         message = Message(self.p2p.socket_connector, "BLOCKCHAIN", self.blockchain) #se blockdup: trocar self.blockchain por self.nogemini()
         encoded_message = BlockchainUtils.encode(message)
         self.p2p.send(requesting_node, encoded_message)
@@ -133,9 +134,9 @@ class Node:
             self.blockchain = local_blockchain_copy
 
     def forge(self):
-        print("FORGE!!")
         forger = self.blockchain.next_forger()
         if forger == self.wallet.public_key_string():
+            print("It's us!")
             block = self.blockchain.create_block(
                 self.transaction_pool.transactions, self.wallet
             )
@@ -152,3 +153,36 @@ class Node:
             self.hippocampus.update_memory(block.to_dict()) #hippocampus
             message = Message(self.p2p.socket_connector, "BLOCK", block)
             self.p2p.broadcast(BlockchainUtils.encode(message))
+            print(f"We forged this block!")
+        else:
+            self.transaction_pool.remove_from_pool(self.transaction_pool.transactions)
+
+
+    def send_ping(self, target_node):
+        """
+        Envia uma mensagem de PING para um nó alvo.
+        """
+        message = Message(self.p2p.socket_connector, "PING", {"sender": self.port})
+        encoded_message = BlockchainUtils.encode(message)
+        self.p2p.send(target_node, encoded_message)
+        print(f"[PING] Enviado para o nó {target_node.port}")
+
+    def handle_ping(self, connected_node, message):
+        """
+        Responde um PING com um PONG.
+        """
+        sender_port = message.data["sender"]
+        response_message = Message(self.p2p.socket_connector, "PONG", {"sender": self.port})
+        encoded_message = BlockchainUtils.encode(response_message)
+        self.p2p.send(connected_node, encoded_message)
+        print(f"[PONG] Respondido para o nó {sender_port}")
+
+    def handle_pong(self, message):
+        """
+        Confirma que o PONG foi recebido.
+        """
+        sender_port = message.data["sender"]
+        print(f"[PONG] Recebido de {sender_port}")
+
+
+        

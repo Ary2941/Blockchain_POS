@@ -74,11 +74,11 @@ pip install -r requirements/dev.txt
 ## Executando nós
 ```sh
 # Terminal 1
-cd blockchain ; python run_node.py --ip=localhost --node_port=8010 --api_port=8050 --key_file=./keys/genesis_private_key.pem
+cd blockchain ; python run_node.py --ip=localhost --node_port=8010 --api_port=8050 --key_file=./keys/genesis_private_key.pem ; cd ..
 # Terminal 2
-cd blockchain ; python run_node.py --ip=localhost --node_port=8011 --api_port=8051 --key_file=./keys/node1_private_key.pem
+cd blockchain ; python run_node.py --ip=localhost --node_port=8011 --api_port=8051 --key_file=./keys/node1_private_key.pem ; cd ..
 # Terminal 3
-cd blockchain ; python run_node.py --ip=localhost --node_port=8012 --api_port=8052 --key_file=./keys/node2_private_key.pem
+cd blockchain ; python run_node.py --ip=localhost --node_port=8012 --api_port=8052 --key_file=./keys/node2_private_key.pem ; cd ..
 # populate with seeds
 cd blockchain ; python sample_transactions.py ; cd ..
 ```
@@ -122,5 +122,8 @@ só entrou
 só saiu
 
 ## TODO:
-  [x] - writing transactions on a file
-  [x] - using a file as a memory to a blockchain
+  [ ] - generate relatory
+  [ ] - do interface
+  [ ] - understand the structure of the algorithm
+  [ ] - fix error in frontend (Optional)
+  [ ] - generate updated requirements.txt
