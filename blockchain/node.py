@@ -37,16 +37,26 @@ class Node:
         self.api.inject_node(self)
         self.api.start(self.ip, api_port)
 
-    def handle_transaction(self, transaction):
+    async def handle_transaction(self, transaction):
         data = transaction.payload()
         signature = transaction.signature
         signer_public_key = transaction.sender_public_key
         signature_valid = Wallet.signature_valid(data, signature, signer_public_key)
         transaction_exists = self.transaction_pool.transaction_exists(transaction)
         transaction_in_block = self.blockchain.transaction_exists(transaction)
+        
+        
+        if transaction.replacing_id:
+            xelement = self.blockchain.get_transaction(transaction.replacing_id)
+            if xelement: # replacing_id is a transaction
+                if xelement.replacing_id: # replacing_id is replacing someone
+                    print(f"🔴 Transaction rejected: try replacing {xelement.id} in replacing_id")
+                    return f"🔴 Transaction rejected: try replacing {xelement.id} in replacing_id"
+            else: 
+                print(f"🔴 Transaction rejected: {transaction.replacing_id} does not exists or is on transaction pool!")
+                return f"🔴 Transaction rejected: {transaction.replacing_id} does not exists or is on transaction pool!"
 
         if not transaction_exists and not transaction_in_block and signature_valid:
-            print(f"✅ transação {str(transaction.id)[:6]} adicionada!")
             self.transaction_pool.add_transaction(transaction)
             message = Message(self.p2p.socket_connector, "TRANSACTION", transaction)
             self.p2p.broadcast(BlockchainUtils.encode(message))
@@ -54,6 +64,8 @@ class Node:
             forging_required = self.transaction_pool.forging_required()
             if forging_required:
                 self.forge()
+            print(f"✅ transação {str(transaction.id)[:6]} adicionada!")
+            return f"✅ transação {str(transaction.id)[:6]} adicionada!"
 
     def handle_block(self, block):
         forger = block.forger
@@ -91,13 +103,12 @@ class Node:
                 self.p2p.broadcast(BlockchainUtils.encode(message))
                 print(f"⬆️ sending blockchain with {len(self.blockchain.blocks)-1} txs")
 
-
     def request_chain(self):
         message = Message(self.p2p.socket_connector, "BLOCKCHAINREQUEST", None)
         encoded_message = BlockchainUtils.encode(message)
         self.p2p.broadcast(encoded_message)
 
-    def nogemini(self): #TODO: otimizar essa parte do código
+    def nogemini(self): 
         seen_signatures = set()  # Conjunto para armazenar assinaturas já vistas
         newblocks = []
 
@@ -156,7 +167,6 @@ class Node:
             print(f"We forged this block!")
         else:
             self.transaction_pool.remove_from_pool(self.transaction_pool.transactions)
-
 
     def send_ping(self, target_node):
         """

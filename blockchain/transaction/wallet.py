@@ -24,6 +24,13 @@ class Wallet:
             )
         self.key_pair = key
 
+    def from_file(self, file):
+        key = serialization.load_pem_private_key(
+            file.read(),
+            password=None
+        )
+        self.key_pair = key
+
     def sign(self, data):
         data_hash = BlockchainUtils.hash(data)
         signature = self.key_pair.sign(

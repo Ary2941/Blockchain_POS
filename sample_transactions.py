@@ -51,8 +51,6 @@ if __name__ == "__main__":
     
 
 
-#TODO: fix freezing on third transaction
-
 '''
 
 import requests

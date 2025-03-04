@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transações Blockchain</title>
+    <script>
+        async function fetchTransactions() {
+            const response = await fetch("http://localhost:8050/api/v1/transaction/"); // Ajuste para o endpoint correto
+            const data = await response.json();
+            return data.all_transactions;
+        }
+
+        function renderTransactions(transactions) {
+            const tbody = document.getElementById("transactions-body");
+            tbody.innerHTML = "";
+            transactions.forEach(tx => {
+                const row = `<tr>
+                    <td>${tx.id}</td>
+                    <td>${tx.Dia}</td>
+                    <td>${tx.Horário}</td>
+                    <td>${tx.Tipo}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function filterTransactions(transactions) {
+            const diaFilter = document.getElementById("dia-filter").value;
+            const horarioFilter = document.getElementById("horario-filter").value;
+            const tipoFilter = document.getElementById("tipo-filter").value;
+
+            return transactions.filter(tx => 
+                (diaFilter === "" || tx.Dia.includes(diaFilter)) &&
+                (horarioFilter === "" || tx.Horário.includes(horarioFilter)) &&
+                (tipoFilter === "" || tx.Tipo.includes(tipoFilter))
+            );
+        }
+
+        async function loadAndFilter() {
+            const transactions = await fetchTransactions();
+            const filtered = filterTransactions(transactions);
+            renderTransactions(filtered);
+        }
+
+        window.onload = async () => {
+            const transactions = await fetchTransactions();
+            renderTransactions(transactions);
+        };
+    </script>
+</head>
+<body>
+    <h1>Transações Blockchain</h1>
+    <label>Dia: <input type="text" id="dia-filter" oninput="loadAndFilter()"></label>
+    <label>Horário: <input type="text" id="horario-filter" oninput="loadAndFilter()"></label>
+    <label>Tipo: <input type="text" id="tipo-filter" oninput="loadAndFilter()"></label>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Dia</th>
+                <th>Horário</th>
+                <th>Tipo</th>
+            </tr>
+        </thead>
+        <tbody id="transactions-body"></tbody>
+    </table>
+</body>
+</html>

@@ -7,11 +7,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>Blockchain Transaction System</h1>
+        <h1>Tratamento de ponto</h1>
         <form id="transactionForm">
 
-            <label for="employee_id">Employee ID:</label>
-            <input type="text" id="employee_id" name="employee_id" placeholder="Employee ID" required><br><br>
+            <label for="replacing_id">Transaction id:</label>
+            <input type="text" id="replacing_id" name="replacing_id" placeholder="replacing_id" required><br><br>
+
+            <label for="employee_id	">id do empregado:</label>
+            <input type="text" id="employee_id" name="employee_id" placeholder="123"><br><br>
 
             <label for="transaction_type">Transaction Type:</label>
             <select id="transaction_type" name="transaction_type">
@@ -19,10 +22,14 @@
                 <option value="SAIDA">SAIDA</option>
             </select><br><br>
 
-            <label for="replacing_id">Ajustar transação:</label>
-            <input type="text" id="replacing_id" name="replacing_id" placeholder="transaction_id"><br><br>
+            <label for="amount">Timestamp:</label>
+            <input type="number" id="amount" name="amount" placeholder="1740975325"><br><br>
 
+            <label for="location">coordenadas:</label>
+            <input type="text" id="location" name="location" placeholder="37.235000,-115.811111"><br><br>
 
+            <label for="replacement_reason">Motivo do ajuste:</label>
+            <input type="text" id="replacement_reason" name="replacement_reason" placeholder="razão"><br><br>
 
 
             <p id="locationStatus"></p> <!-- Exibindo o status da localização -->
@@ -35,44 +42,28 @@
 
     <script>
 
-    async function getLocation() {
-        return new Promise((resolve, reject) => {
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        let location = `${position.coords.latitude},${position.coords.longitude}`; // Formato "latitude,longitude"
-                        resolve(location); // Retorna a string com as coordenadas
-                    },
-                    (error) => {
-                        console.error("Erro ao obter localização:", error);
-                        reject(error);
-                    }
-                );
-            } else {
-                reject(new Error("Geolocalização não suportada no seu navegador."));
-            }
-        });
-    }
-
     document.getElementById("transactionForm").addEventListener("submit", async function(event) {
         event.preventDefault(); // Impede o envio padrão do formulário
         document.getElementById("responseMessage").innerText = "...";
 
         
         try {
-            const location = await getLocation(); // Obtém a localização como string "latitude,longitude"
-            document.getElementById("locationStatus").innerText = "Localização obtida: " + location;
-
             // Obtendo os valores do formulário
             const key_pair = "./keys/genesis_private_key.pem";
-            const employee_id = document.getElementById("employee_id").value;
+            const employee_id = document.getElementById("employee_id").value || "";
+            const amount = document.getElementById("amount").value || "";
+            const location = document.getElementById("location").value || "";
             const transactionType = document.getElementById("transaction_type").value;
             const replacing_id = document.getElementById("replacing_id")?.value || "";
+            const replacement_reason = document.getElementById("replacement_reason")?.value || "";
 
             // Criando o objeto JSON
             const transactionData = {
                 key_pair: key_pair,
                 employee_id: employee_id,
+                amount: amount,
+                location: location,
+                replacement_reason: replacement_reason,
                 transaction_type: transactionType,
                 location: location,
                 replacing_id: replacing_id
@@ -81,7 +72,7 @@
 
 
             // Enviando a requisição como JSON
-            const response = await fetch('/send_transaction', {
+            const response = await fetch('/edit_transaction', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -90,8 +81,7 @@
             });
 
             const result = await response.json();
-            console.log(result);
-            document.getElementById("responseMessage").innerText = result;
+            document.getElementById("responseMessage").innerText = "transaction sent";
         } catch (error) {
             console.error("Erro ao obter localização:", error);
             document.getElementById("locationStatus").innerText = "Localização não determinada";

@@ -9,9 +9,10 @@
 	"location":           "37.235000,-115.811111",
 	"replacing_id":       "XXXXXXXXXXXXXXXXXXXXXXXX",
 	"replacement_reason": "Logou atrasado",
-	"adjusted_by":        "employee_id",
+	"adjusted_by":        "employee_id", # futuramente será removida
 	"id":"8d545cdde7ee11ef81308cb0e9c2871b",
 	"signature":"1121481898640eece4c22c548b9aadd..."
+  #"CH": int    #futuramente será adicionada
 }
 ```
 
@@ -81,7 +82,11 @@ cd blockchain ; python run_node.py --ip=localhost --node_port=8011 --api_port=80
 cd blockchain ; python run_node.py --ip=localhost --node_port=8012 --api_port=8052 --key_file=./keys/node2_private_key.pem ; cd ..
 # populate with seeds
 cd blockchain ; python sample_transactions.py ; cd ..
+# test routes
+cd frontend ; python app.py ; cd ..
 ```
+
+
 __Visualizar a blockchain pelo nó com a node_port fornecida__
 
 ```sh
@@ -122,8 +127,8 @@ só entrou
 só saiu
 
 ## TODO:
-  [ ] - generate relatory
-  [ ] - do interface
+  [ ] - generate relatory - 4/3/2025
+  [ ] - generate updated requirements.txt - 5/3/2025
+  [ ] - generate more screens - 6/3/2025
   [ ] - understand the structure of the algorithm
-  [ ] - fix error in frontend (Optional)
-  [ ] - generate updated requirements.txt
+  

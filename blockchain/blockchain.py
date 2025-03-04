@@ -16,6 +16,14 @@ class Blockchain:
         self.execute_transactions(block.transactions)
         self.blocks.append(block)
 
+    def get_transaction(self, transaction_id):
+        for block in self.blocks:
+            for transaction in block.transactions:
+                if transaction.id == transaction_id:
+                    return transaction
+                
+        return None
+
     def to_dict(self):
         data = {}
         blocks_readable = []
@@ -54,6 +62,7 @@ class Blockchain:
     def transaction_covered(self, transaction): 
         # se for transação de entrada some no balanço de horas
         # se for outra veja se o balanço é menor do que vai entrar, se sim a transação é coberta
+
         if transaction.type == "ENTRADA":
             return True
         sender_balance = self.account_model.get_balance(transaction.sender_public_key)
