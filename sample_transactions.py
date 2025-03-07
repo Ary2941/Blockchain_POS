@@ -22,32 +22,32 @@ if __name__ == "__main__":
     # Block size: 2 transactions / block
 
     # Forger: Genesis
-    post_transaction(john, 1, "ENTRADA","1","1,2")
-    post_transaction(john, 2, "ENTRADA","1","1,2","1","Logou atrasado","id")
+    post_transaction(john, 10, "ENTRADA","1","1,2")
+    post_transaction(john, 20, "ENTRADA","1","1,2","1","Logou atrasado","id")
 
-    post_transaction(john, 3, "ENTRADA","2")
-    post_transaction(john, 4, "ENTRADA","2")
+    post_transaction(john, 30, "ENTRADA","2")
+    post_transaction(john, 40, "ENTRADA","2")
 
-    post_transaction(john, 5, "ENTRADA","3")
-    post_transaction(john, 6, "ENTRADA","3")
+    post_transaction(john, 50, "ENTRADA","3")
+    post_transaction(john, 60, "ENTRADA","3")
 
-    post_transaction(john, 7, "ENTRADA","4")
-    post_transaction(john, 8, "ENTRADA","4")
+    post_transaction(john, 70, "ENTRADA","4")
+    post_transaction(john, 80, "ENTRADA","4")
 
-    post_transaction(john, 9, "ENTRADA","5")
-    post_transaction(john, 10, "ENTRADA","5")
+    post_transaction(john, 90, "ENTRADA","5")
+    post_transaction(john, 100, "ENTRADA","5")
 
-    post_transaction(john, 11, "ENTRADA","6")
-    post_transaction(john, 12, "ENTRADA","6")
+    post_transaction(john, 110, "ENTRADA","6")
+    post_transaction(john, 120, "ENTRADA","6")
 
-    post_transaction(john, 13, "ENTRADA","7")
-    post_transaction(john, 14, "ENTRADA","7")
+    post_transaction(john, 130, "ENTRADA","7")
+    post_transaction(john, 140, "ENTRADA","7")
 
-    post_transaction(john, 15, "ENTRADA","8")
-    post_transaction(john, 16, "ENTRADA","8")
+    post_transaction(john, 150, "ENTRADA","8")
+    post_transaction(john, 160, "ENTRADA","8")
 
-    post_transaction(john, 17, "ENTRADA","9")
-    post_transaction(john, 18, "ENTRADA","9")
+    post_transaction(john, 170, "ENTRADA","9")
+    post_transaction(john, 180, "ENTRADA","9")
     
 
 

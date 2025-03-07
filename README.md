@@ -115,20 +115,16 @@ __Através de [http://localhost:8010/transaction/CH/?employee_id=<employee_id>] 
 cd blockchain ; python app.py
 ```
 
-## Testes a se fazer
+## Adicões
 
-entrou por uma transação
-saiu por outra
+geração do id de empregado pela chave que assina (caso arquivo pem inserido)
 
-entrou duas vezes seguidas
-saiu duas vezes seguidas
 
-só entrou
-só saiu
 
 ## TODO:
-  [ ] - generate relatory - 4/3/2025
   [ ] - generate updated requirements.txt - 5/3/2025
   [ ] - generate more screens - 6/3/2025
   [ ] - understand the structure of the algorithm
-  
+  [ ] - implement ignore on routes to desconsider some alterations  
+
+

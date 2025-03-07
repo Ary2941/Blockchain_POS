@@ -20,3 +20,5 @@ key = serialization.load_pem_private_key(
    x,
     password=None,
 )
+
+print(key)

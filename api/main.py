@@ -62,7 +62,6 @@ class NodeAPI:
 async def healthcheck():
     return {"success": "pong!"}
 
-
 # FACULTATIVOS
 @app.get("/create/", name="Create transaction page")
 async def transaction_pool(request: Request):
