@@ -15,19 +15,31 @@ router = APIRouter()
 
 
 @router.get("/", name="view all valid transactions")
-async def blickchain(request: Request, employee_id: str = Query(None),start: float = Query(None),end: float = Query(None)):
+async def blickchain(
+    request: Request, 
+    id: str = Query(None), 
+    employee_id: str = Query(None),
+    start: float = Query(None),
+    end: float = Query(None),
+    architects: str = ""
+    ):
+    architects = architects.split(",") if architects else []
     work_hours_string = '' 
     points_string = ''
     transactions_edited_string = ''
     node = request.app.state.node
     blockchain_data = node.blockchain.to_dict()
 
+    
+
     # Extraindo todas as transações da blockchain
     all_transactions = [
-        tx for block in blockchain_data.get("blocks", []) for tx in block.get("transactions", []) 
-        if (not employee_id or tx.get("employee_id") == employee_id)
+        tx for block in blockchain_data.get("blocks", []) for tx in block.get("transactions", [])
+        if (not id or tx.get("id") == id)
+        and (not employee_id or tx.get("employee_id") == employee_id)
         and (not start or tx.get("amount") > start)
         and (not end or tx.get("amount") < end)
+        and ((not(architects) or not(tx.get("adjusted_by"))) or (tx.get("adjusted_by") in architects))
     ]
     
     return {
@@ -296,8 +308,14 @@ async def edit_transactionRAW(request: Request):
     
 
     client = Wallet()
+    adjusted_by = payload.get("adjusted_by")
     if payload.get("file"):
-        client.from_file(payload["file"])
+        try:
+            client.from_file(payload["file"])
+            adjusted_by = generateUserId(client.public_key_string())
+        except:
+            print("FAILED TO LOAD FILE IN PAYLOAD")
+
     elif payload.get("sender_private_key"):
         client.from_key(payload["sender_private_key"])
     
@@ -314,7 +332,8 @@ async def edit_transactionRAW(request: Request):
         employee_id=employee_id,
         location=location,
         replacing_id=replacing_id,
-        replacement_reason=replacement_reason
+        replacement_reason=replacement_reason,
+        adjusted_by=adjusted_by
         )
     result = await node.handle_transaction(transaction)
     print ("RESULT", result)

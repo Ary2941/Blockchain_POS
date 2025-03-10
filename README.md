@@ -84,6 +84,8 @@ cd blockchain ; python run_node.py --ip=localhost --node_port=8012 --api_port=80
 cd blockchain ; python sample_transactions.py ; cd ..
 # test routes
 cd frontend ; python app.py ; cd ..
+# test relatory
+http://127.0.0.1:5000/relatory?employee_id={employee_id}&architects={employee_id,...}start={dd/mm/YYYY}&end={dd/mm/YYYY}
 ```
 
 
@@ -125,6 +127,7 @@ geração do id de empregado pela chave que assina (caso arquivo pem inserido)
   [ ] - generate updated requirements.txt - 5/3/2025
   [ ] - generate more screens - 6/3/2025
   [ ] - understand the structure of the algorithm
-  [ ] - implement ignore on routes to desconsider some alterations  
-
-
+  [ ] - add a way to gather personal information
+  [ ] - add CH to the transaction
+  [ ] - define a block size
+  [ ] - test fork attack
