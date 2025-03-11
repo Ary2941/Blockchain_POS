@@ -81,7 +81,8 @@
             });
 
             const result = await response.json();
-            document.getElementById("responseMessage").innerText = "transaction sent";
+            console.log(result);
+            document.getElementById("responseMessage").innerText = result;
         } catch (error) {
             console.error("Erro ao obter localização:", error);
             document.getElementById("locationStatus").innerText = "Localização não determinada";

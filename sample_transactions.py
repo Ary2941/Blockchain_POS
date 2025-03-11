@@ -20,6 +20,8 @@ def post_transaction(sender, amount=None, type=None,employee_id=None,location=No
     transaction = sender.create_transaction(amount, type,employee_id,location,replacing_id,replacement_reason,adjusted_by)
     url = "http://localhost:8050/api/v1/transaction/create/"
     package = {"transaction": BlockchainUtils.encode(transaction)}
+    print("pkg",package)
+
     response = requests.post(url, json=package, timeout=120)
     print(response.text)
 

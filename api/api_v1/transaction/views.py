@@ -3,13 +3,15 @@ from json import JSONDecodeError
 
 from fastapi import APIRouter, HTTPException, Request, Query
 
-from blockchain.PEM.decodificate import generateUserId
+from blockchain.utils.decodificate import generateUserId
 from blockchain.transaction.getAmount import getAmount
 from blockchain.transaction.wallet import Wallet
 from blockchain.utils.helpers import BlockchainUtils,convert_seconds
 from blockchain.utils.hash import load_public_key, get_public_key_hash
 
 from collections import defaultdict
+
+from blockchain.transaction.transaction import Transaction
 
 router = APIRouter()
 
@@ -49,15 +51,13 @@ async def blickchain(
 
 @router.get("/CH", name="return working wours")
 async def blockchain(request: Request, employee_id: str = Query(None)):
-    work_hours_string = '' 
-    points_string = ''
-    transactions_edited_string = ''
+
     
     node = request.app.state.node
     blockchain_data = node.blockchain.to_dict()
 
     all_transactions = [
-        tx for block in blockchain_data.get("blocks", []) for tx in block.get("transactions", [])  if tx.get("employee_id") == employee_id
+        tx for block in blockchain_data.get("blocks", []) for tx in block.get("transactions", [])  if (not employee_id or tx.get("employee_id") == employee_id)
     ]
 
     transactions_edited = {}
@@ -84,13 +84,14 @@ async def blockchain(request: Request, employee_id: str = Query(None)):
                 motivo = "não informado"
             tipo = transaction_map[replacing_id].get("type")
 
-            stepted = dict(data = date_str,
-                 hora = hour_str,
-                 tipo = tipo,
-                 motivo = motivo 
+            stepted = dict(
+                id = transaction_id,
+                data = date_str,
+                hora = hour_str,
+                tipo = tipo,
+                motivo = motivo 
             )
             transactions_edited[transaction_id] = stepted
-            transactions_edited_string +="\n "+ hour_str+' & '+tipo+' & '+motivo+" \\\\"
 
             transaction_map[replacing_id] = steptx
         else:
@@ -103,48 +104,27 @@ async def blockchain(request: Request, employee_id: str = Query(None)):
     transactions_by_date = defaultdict(list)
     points = []
     for tx in all_transactions:
+        transaction_id = tx.get("transaction_id")
         timestamp = datetime.fromtimestamp(tx.get("amount"))
         hour_str = timestamp.strftime("%H:%M:%S")
         date_str = timestamp.strftime("%d-%m-%Y")
         ch = 1
         tipo = tx.get("type")
         transactions_by_date[date_str].append(tx)
-        points.append(dict(data = date_str,hora = hour_str,tipo=tipo,CH = ch))
-        points_string += "\n "+ date_str+' & '+hour_str+' & '+str(ch)+" \\\\"
 
-    print(points)
-             
-    for date, transactions in transactions_by_date.items():
-        transactions.sort(key=lambda x: x["amount"])
-        daily_hours = 0
-        last_entry = None
-        
-        stringHours = ""
+        stepted = dict(
+            id = transaction_id,
+            data = date_str,
+            hora = hour_str,
+            tipo = tipo,
+            CH  = ch,
+            )
 
-        for tx in transactions:
-
-            timestamp = datetime.fromtimestamp(tx.get("amount"))
-            stringHours += ' '+ timestamp.strftime("%H:%M:%S") 
-            
-
-            if tx["type"] == "ENTRADA":
-                last_entry = tx["amount"]
-            elif tx["type"] == "SAIDA" and last_entry:
-                daily_hours += tx["amount"] - last_entry
-                last_entry = None
-
-
-        work_hours_string += "\n "+ date+' & '+stringHours[1:]+' & '+convert_seconds(daily_hours)+" \\\\"
-
-        work_hours.append(dict(data=date,horas_trabalhadas=convert_seconds(daily_hours),registros=stringHours[1:]))
+        points.append(stepted)
 
     return {
-        "Jornada realizada": work_hours, 
         "Marcações registradas no ponto eletrônico:": points,
         "Tratamentos efetuados sobre os dados originais:": transactions_edited,
-        "tratamentos":transactions_edited_string[2:],
-        "marcacoes":points_string[2:],
-        "jornada":work_hours_string[2:]
         }
 
 @router.get("/relatory", name="return working wours")
@@ -256,85 +236,23 @@ async def create_transaction(request: Request):
         
     transaction = BlockchainUtils.decode(payload["transaction"])
     #BREAKPOINT
+    if type(transaction) == dict and transaction['py/object'] == 'utils.transaction.Transaction':
+
+        sender_public_key = transaction['sender_public_key'].replace(r'\n', '\\n')
+        txid = transaction['id']
+        amount = transaction['amount']
+        tipo = transaction['type']
+        employee_id = transaction['employee_id']
+        location = transaction['location']
+        replacing_id = transaction['replacing_id']
+        replacement_reason = transaction['replacement_reason']
+        adjusted_by= transaction['adjusted_by']
+        signature = transaction['signature']
+        transaction = Transaction(sender_public_key, amount, tipo,employee_id,location,replacing_id,replacement_reason,adjusted_by)
+        transaction.id = txid
+        transaction.sign(signature)
+
+
     result = await node.handle_transaction(transaction)
     print ("RESULT", result)
     return result
-
-@router.post("/createRAW/", name="Create transaction by dictionary")
-async def create_transactionRAW(request: Request):
-    node = request.app.state.node
-    try:
-        payload = await request.json()
-    except JSONDecodeError:
-        raise HTTPException(status_code=400, detail="Can not parse request body.")
-    payload = BlockchainUtils.decode(payload)
-    
-    client = Wallet()
-    employee_id = payload.get("employee_id")
-
-    if payload.get("file"):
-        client.from_file(payload["file"])
-        employee_id = generateUserId(client.public_key_string())
-    
-    elif payload.get("sender_private_key"):
-        client.from_key(payload["sender_private_key"])
-    print(f"PUBKEY{client.public_key_string() }")
-    amount = getAmount()
-    type = payload.get("type")
-    print(f"EMPLOYEE_ID{employee_id}")
-    
-    
-    ###
-    ### TODO: employee_id vai ser a chave pública da chave privada de quem publica convertido em base64
-    ###
-    location = payload.get("location")
-    replacing_id = payload.get("replacing_id")
-    replacement_reason = payload.get("replacement_reason")
-    adjusted_by = payload.get("adjusted_by")
-    transaction = client.create_transaction(amount, type,employee_id,location,replacing_id,replacement_reason,adjusted_by)
-    result = await node.handle_transaction(transaction)
-    print ("RESULT", result)
-
-
-#TODO: add coding and decoding for safety
-@router.post("/editRAW/", name="Edit transaction by dictionary")
-async def edit_transactionRAW(request: Request):
-    node = request.app.state.node
-    try:
-        payload = await request.json()
-    except JSONDecodeError:
-        raise HTTPException(status_code=400, detail="Can not parse request body.")
-    payload = BlockchainUtils.decode(payload)
-    
-
-    client = Wallet()
-    adjusted_by = payload.get("adjusted_by")
-    if payload.get("file"):
-        try:
-            client.from_file(payload["file"])
-            adjusted_by = generateUserId(client.public_key_string())
-        except:
-            print("FAILED TO LOAD FILE IN PAYLOAD")
-
-    elif payload.get("sender_private_key"):
-        client.from_key(payload["sender_private_key"])
-    
-    type = payload.get("type")
-    amount = payload.get("amount")
-    location = payload.get("location")
-    replacing_id = payload.get("replacing_id")
-    replacement_reason = payload.get("replacement_reason")
-    employee_id = payload.get("employee_id")
-    print(replacing_id,"replacing this id")
-    transaction = client.create_transaction(
-        amount=int(amount), 
-        type=type,
-        employee_id=employee_id,
-        location=location,
-        replacing_id=replacing_id,
-        replacement_reason=replacement_reason,
-        adjusted_by=adjusted_by
-        )
-    result = await node.handle_transaction(transaction)
-    print ("RESULT", result)
-

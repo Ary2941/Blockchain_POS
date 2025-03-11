@@ -131,3 +131,6 @@ geração do id de empregado pela chave que assina (caso arquivo pem inserido)
   [ ] - add CH to the transaction
   [ ] - define a block size
   [ ] - test fork attack
+  [ ] - optimize blockchain sharing/validation
+  [ ] - update main page to get from route CH
+  [ ] - create cryptify message e decryptify in wallet

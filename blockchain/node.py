@@ -9,7 +9,7 @@ from blockchain.transaction.transaction_pool import TransactionPool
 from blockchain.transaction.wallet import Wallet
 from blockchain.utils.helpers import BlockchainUtils
 from blockchain.utils.logger import logger
-from blockchain.hippocampus.hippocampus import Hippocampus #HIPPOCAMPUS
+from blockchain.utils.hippocampus import Hippocampus #HIPPOCAMPUS
 
 def nownownow ():
     agora = datetime.now()
@@ -50,8 +50,8 @@ class Node:
             xelement = self.blockchain.get_transaction(transaction.replacing_id)
             if xelement: # replacing_id is a transaction
                 if xelement.replacing_id: # replacing_id is replacing someone
-                    print(f"🔴 Transaction rejected: try replacing {xelement.id} in replacing_id")
-                    return f"🔴 Transaction rejected: try replacing {xelement.id} in replacing_id"
+                    print(f"🔴 Transaction rejected: try replacing id by {xelement.replacing_id}")
+                    return f"🔴 Transaction rejected: did you mean {xelement.replacing_id}?"
             else: 
                 print(f"🔴 Transaction rejected: {transaction.replacing_id} does not exists or is on transaction pool!")
                 return f"🔴 Transaction rejected: {transaction.replacing_id} does not exists or is on transaction pool!"
@@ -64,8 +64,8 @@ class Node:
             forging_required = self.transaction_pool.forging_required()
             if forging_required:
                 self.forge()
-            print(f"✅ transação {str(transaction.id)[:6]} adicionada!")
-            return f"✅ transação {str(transaction.id)[:6]} adicionada!"
+            print(f"✅ transação {str(transaction.id)} adicionada!")
+            return f"✅ transação {str(transaction.id)} adicionada!"
 
     def handle_block(self, block):
         forger = block.forger
