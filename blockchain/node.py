@@ -104,7 +104,7 @@ class Node:
                 print(f"⬆️ sending blockchain with {len(self.blockchain.blocks)-1} txs")
 
     def request_chain(self):
-        message = Message(self.p2p.socket_connector, "BLOCKCHAINREQUEST", None)
+        message = Message(self.p2p.socket_connector, "BLOCKCHAINREQUEST", len(self.blockchain.blocks))
         encoded_message = BlockchainUtils.encode(message)
         self.p2p.broadcast(encoded_message)
 
@@ -124,8 +124,8 @@ class Node:
         self.blockchain.blocks = newblocks
         return self.blockchain
 
-    def handle_blockchain_request(self, requesting_node):
-        print(f"REQUESTING_NODE{requesting_node}")
+    def handle_blockchain_request(self, requesting_node,data):
+        print(f"{requesting_node.port} is requesting blockchain {data}")
         message = Message(self.p2p.socket_connector, "BLOCKCHAIN", self.blockchain) #se blockdup: trocar self.blockchain por self.nogemini()
         encoded_message = BlockchainUtils.encode(message)
         self.p2p.send(requesting_node, encoded_message)

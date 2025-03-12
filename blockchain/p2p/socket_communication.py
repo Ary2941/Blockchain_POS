@@ -57,7 +57,7 @@ class SocketCommunication(Node):
             block = message.data
             self.node.handle_block(block)
         elif message.message_type == "BLOCKCHAINREQUEST":
-            self.node.handle_blockchain_request(connected_node)
+            self.node.handle_blockchain_request(connected_node,message.data)
         elif message.message_type == "BLOCKCHAIN":
             blockchain = message.data
             self.node.handle_blockchain(blockchain)

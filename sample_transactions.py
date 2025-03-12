@@ -22,7 +22,7 @@ def post_transaction(sender, amount=None, type=None,employee_id=None,location=No
     package = {"transaction": BlockchainUtils.encode(transaction)}
     print("pkg",package)
 
-    response = requests.post(url, json=package, timeout=120)
+    response = requests.post(url, json=package)
     print(response.text)
 
 

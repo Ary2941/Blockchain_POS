@@ -16,14 +16,11 @@ from blockchain.transaction.getAmount import getAmount
 from blockchain.transaction.wallet import Wallet
 from blockchain.utils.helpers import BlockchainUtils
 
-# Caminho para a pasta 'templates' dentro do diretório 'api'
 templates_dir = os.path.join(os.path.dirname(__file__), "api_v1", "templates")
 
-# Verificar se a pasta 'templates' existe e criar se não existir
 if not os.path.exists(templates_dir):
     os.makedirs(templates_dir)
 
-# Inicializando o app FastAPI
 app = FastAPI(
     docs_url="/api/v1/docs/",
     title="Blockchain API",
@@ -41,7 +38,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Inicializando o Jinja2Templates
 templates = Jinja2Templates(directory=templates_dir)
 session = requests.Session()
 
