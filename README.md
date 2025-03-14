@@ -26,7 +26,7 @@ _Se "replacing_id" é None: a transação é tratada como não sendo ajuste_
 ## [x] - Passos para mandar a Localização Atual
 1. **pegar posição atual do aparelho (via autorização do browser)** 
 2. **retornar latitude e longitude**
-## [ ] - Passos para Calcular as Horas Trabalhadas
+## [x] - Passos para Calcular as Horas Trabalhadas
 1. **Filtrar transações por funcionário (`employee_id`)**
 2. **Identificar marcações de entrada (`ENTRADA`) e saída (`SAÍDA`)**
 3. **Considerar apenas os registros mais recentes de cada período**
@@ -134,3 +134,4 @@ geração do id de empregado pela chave que assina (caso arquivo pem inserido)
   [ ] - optimize blockchain sharing/validation
   [ ] - update main page to get from route CH
   [ ] - create cryptify message e decryptify in wallet
+  [ ] - create merkle root
