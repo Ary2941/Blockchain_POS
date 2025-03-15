@@ -1,1 +1,1 @@
-'''Reservado para testes de algumas funcionalidades'''
+'''Reservado para teste de alguma funcionalidade'''

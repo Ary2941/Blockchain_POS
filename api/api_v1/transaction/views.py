@@ -1,6 +1,7 @@
 from datetime import datetime
 from json import JSONDecodeError
 
+import dill
 from fastapi import APIRouter, HTTPException, Request, Query
 
 from blockchain.utils.decodificate import generateUserId
@@ -236,6 +237,9 @@ async def create_transaction(request: Request):
         
     transaction = BlockchainUtils.decode(payload["transaction"])
     #BREAKPOINT
+    transaction = dill.loads(transaction)
+
+    '''
     if type(transaction) == dict and transaction['py/object'] == 'utils.transaction.Transaction':
 
         sender_public_key = transaction['sender_public_key'].replace(r'\n', '\\n')
@@ -251,8 +255,8 @@ async def create_transaction(request: Request):
         transaction = Transaction(sender_public_key, amount, tipo,employee_id,location,replacing_id,replacement_reason,adjusted_by)
         transaction.id = txid
         transaction.sign(signature)
+    '''
 
-
-    result = await node.handle_transaction(transaction)
+    result = node.handle_transaction_self(transaction) #     result = await node.handle_transaction(transaction)
     print ("RESULT", result)
     return result

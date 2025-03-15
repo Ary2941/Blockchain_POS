@@ -11,6 +11,7 @@ from blockchain.utils.logger import logger
 
 class SocketCommunication(Node):
     def __init__(self, ip, port):
+        self.port = port
         super(SocketCommunication, self).__init__(ip, port, None)
         self.peers = []
         self.peer_discovery_handler = PeerDiscoveryHandler(self)
@@ -50,6 +51,7 @@ class SocketCommunication(Node):
         message = BlockchainUtils.decode(json.dumps(message))
         if message.message_type == "DISCOVERY":
             self.peer_discovery_handler.handle_message(message)
+
         elif message.message_type == "TRANSACTION":
             transaction = message.data
             self.node.handle_transaction(transaction)
@@ -61,6 +63,11 @@ class SocketCommunication(Node):
         elif message.message_type == "BLOCKCHAIN":
             blockchain = message.data
             self.node.handle_blockchain(blockchain)
+        elif message.message_type == "PING":
+            self.node.handle_ping(connected_node,message.data)
+        elif message.message_type == "PONG":
+            self.node.handle_pong(message.data)
+
 
     def send(self, receiver, message):
         self.send_to_node(receiver, message)

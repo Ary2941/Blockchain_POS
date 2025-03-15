@@ -12,17 +12,20 @@ class Hippocampus:
         diretorio = os.path.dirname(self.caminho_arquivo)
         if not os.path.exists(diretorio):
             os.makedirs(diretorio)
-
         try:
-            with open(self.caminho_arquivo, 'r', encoding='utf-8') as arquivo:
+            print(self.caminho_arquivo)
+            with open(self.caminho_arquivo, 'rb') as arquivo:
+                data = []
                 self.dados = dill.load(arquivo)
-
+                for n in self.dados:
+                    data.append(dill.loads(n))
+                self.dados = data
                 # Verifica se o JSON tem o formato correto
                 if not isinstance(self.dados, list):
                     raise ValueError("Formato inválido de memória. Criando nova...")
                 
-        except (FileNotFoundError, json.decoder.JSONDecodeError, ValueError):
-            print("Creating memory...")
+        except Exception as e:
+            print(f"{e}Creating memory...")
             self.dados = [Block.genesis()]
             self.salvar_memoria()
 
@@ -37,11 +40,13 @@ class Hippocampus:
 
         self.dados.append(dill.dumps(block))
         self.salvar_memoria()
-        print("Bloco adicionado com sucesso!")
+        print(f"Bloco {len(self.dados)} adicionado com sucesso!")
 
     def dejavu(self):
+        print("DEJAVU BLOCKS")
         blocks = []
         for block in self.dados:
             blocks.append(block)
-        return [Block.genesis()]
+        print(blocks)
+        return blocks
         

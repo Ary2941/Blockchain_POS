@@ -135,3 +135,22 @@ geração do id de empregado pela chave que assina (caso arquivo pem inserido)
   [ ] - update main page to get from route CH
   [ ] - create cryptify message e decryptify in wallet
   [ ] - create merkle root
+
+
+  # OBS:
+    a chave genesis é usada em proof_of _stake
+
+
+  
+15-03-2025 TODO:
+  levando em conta que account_model é herdado em handle_blockchain
+  no momento a blockchain está levando em consideração as chaves privadas que estão sendo 
+
+  . quando um nó ser iniciado ele cria uma blockchain
+  + blockchain.account_model.add_account(chave em hex do nó)
+  + blockchain.account_model.update_balance(chave em hex do nó, quantidade)
+  + quando nó ser conectado ele rode add_account
+  .. daí quando o novo nó herdar a blockchain ele também vai herdar os balanços
+  - retirar modificações de balanç e contas em blockchain (excepto quando identificar fraude)
+  - não levar em consideração a chave pública do bloco e sim do bloco
+  .. provavelmente vou usar a função discovery para criar uma inocação gêmea, ao mesmo temo que vai enviar o socket ela vai enviar os balanços

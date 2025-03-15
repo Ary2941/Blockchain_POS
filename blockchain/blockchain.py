@@ -1,3 +1,4 @@
+import binascii
 import logging
 
 from blockchain.block import Block
@@ -38,9 +39,7 @@ class Blockchain:
         return True
 
     def block_count_valid(self, block):
-        if self.blocks[-1].block_count == block.block_count - 1:
-            return True
-        return False
+        return self.blocks[-1].block_count+1 == block.block_count
 
     def last_block_hash_valid(self, block):
         last_block_chain_block_hash = BlockchainUtils.hash(
@@ -85,6 +84,9 @@ class Blockchain:
             amount = transaction.amount
             self.account_model.update_balance(sender, amount)
 
+        print(self.account_model.accounts)
+        print(self.account_model.balances)
+
     def next_forger(self):
         last_block_hash = BlockchainUtils.hash(self.blocks[-1].payload()).hex()
         next_forger = self.pos.forger(last_block_hash)
@@ -110,11 +112,22 @@ class Blockchain:
         return False
 
     def forger_valid(self, block):
-        forger_public_key = self.pos.forger(block.last_hash)
-        proposed_block_forger = block.forger
-        if forger_public_key == proposed_block_forger:
-            return True
-        return False
+        forger_public_key = self.pos.forger(block.last_hash)  # Chave esperada (pode estar em hex)
+        proposed_block_forger = block.forger  # Chave proposta (PEM ou hex)
+
+        # Se a chave esperada estiver em hex, converta para PEM
+        try:
+            forger_public_key_pem = binascii.unhexlify(forger_public_key)
+        except (binascii.Error, UnicodeDecodeError):
+            forger_public_key_pem = forger_public_key.encode("utf-8")  # Já está em PEM
+
+        # Se a chave proposta estiver em hex, converta para PEM
+        try:
+            proposed_block_forger_pem = binascii.unhexlify(proposed_block_forger)
+        except (binascii.Error, UnicodeDecodeError):
+            proposed_block_forger_pem = proposed_block_forger.encode("utf-8")  # Já está em PEM
+
+        return forger_public_key_pem == proposed_block_forger_pem
 
     def transactions_valid(self, transactions):
         covered_transactions = self.get_covered_transaction_set(transactions)
