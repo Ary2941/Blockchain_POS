@@ -6,7 +6,7 @@ from blockchain.utils.helpers import BlockchainUtils
 
 
 def seeds_from_30(client,user="nouser"):
-    numdays = 1
+    numdays = 9
 
     base = datetime.datetime(datetime.datetime.now().year,datetime.datetime.now().month,datetime.datetime.now().day)
     date_list = [base - datetime.timedelta(days=x) for x in range(numdays+1)]
@@ -32,7 +32,7 @@ def post_transaction(sender, amount=None, type=None,employee_id=None,location=No
 
 
 if __name__ == "__main__":
-    Portgoal = 8050
+    Portgoal = 8051
 
     john = Wallet()
     john.from_key("./keys/node1_private_key.pem")
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     # Block size: 2 transactions / block
     
     tempo = datetime.datetime.now()
-    seeds_from_30(john,"Oldegario")
+    seeds_from_30(john,"Oldegaria")
     tempa = datetime.datetime.now()
 
     print(tempa-tempo)

@@ -27,6 +27,7 @@ class Node:
         self.blockchain.blocks = self.hippocampus.dejavu() #HIPPOCAMPUS
         if key:
             self.wallet.from_key(key)
+            self.blockchain.pos.update(self.wallet.public_key_string(),1)
 
     def start_p2p(self):
         self.p2p = SocketCommunication(self.ip, self.port)
@@ -59,8 +60,8 @@ class Node:
 
         if not transaction_exists and not transaction_in_block and signature_valid:
             self.transaction_pool.add_transaction(transaction)
-            message = Message(self.p2p.socket_connector, "TRANSACTION", transaction)
-            self.p2p.broadcast(BlockchainUtils.encode(message))
+            #message = Message(self.p2p.socket_connector, "TRANSACTION", transaction)
+            #self.p2p.broadcast(BlockchainUtils.encode(message))
 
             forging_required = self.transaction_pool.forging_required()
             if forging_required:

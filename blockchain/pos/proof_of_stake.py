@@ -7,7 +7,7 @@ from blockchain.utils.helpers import BlockchainUtils
 class ProofOfStake:
     def __init__(self):
         self.stakers = {}
-        self.set_genesis_node_stake()
+        #self.set_genesis_node_stake()
 
     def set_genesis_node_stake(self):
         with open("./keys/genesis_public_key.pem", "rb") as key_file:
