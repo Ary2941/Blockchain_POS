@@ -10,12 +10,13 @@ from blockchain.utils.logger import logger
 
 
 class SocketCommunication(Node):
-    def __init__(self, ip, port):
+    def __init__(self, ip, port,key=''):
+        self.key = key
         self.port = port
         super(SocketCommunication, self).__init__(ip, port, None)
         self.peers = []
         self.peer_discovery_handler = PeerDiscoveryHandler(self)
-        self.socket_connector = SocketConnector(ip, port)
+        self.socket_connector = SocketConnector(ip, port,key)
 
     def init_server(self):
         logger.info(
@@ -51,6 +52,7 @@ class SocketCommunication(Node):
         message = BlockchainUtils.decode(json.dumps(message))
         if message.message_type == "DISCOVERY":
             self.peer_discovery_handler.handle_message(message)
+            self.node.add_stakers([node.public_key for node in message.data])
 
         elif message.message_type == "TRANSACTION":
             transaction = message.data

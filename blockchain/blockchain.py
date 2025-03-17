@@ -84,9 +84,6 @@ class Blockchain:
             amount = transaction.amount
             self.account_model.update_balance(sender, amount)
 
-        print(self.account_model.accounts)
-        print(self.account_model.balances)
-
     def next_forger(self):
         last_block_hash = BlockchainUtils.hash(self.blocks[-1].payload()).hex()
         next_forger = self.pos.forger(last_block_hash)

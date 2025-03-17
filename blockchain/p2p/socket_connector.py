@@ -2,7 +2,8 @@ import os
 
 
 class SocketConnector:
-    def __init__(self, ip, port):
+    def __init__(self, ip, port,key=''):
+        self.public_key = key
         self.ip = ip
         self.port = port
         self.use_docker = os.environ.get("USE_DOCKER", False)

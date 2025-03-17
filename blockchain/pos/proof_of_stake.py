@@ -7,7 +7,7 @@ from blockchain.utils.helpers import BlockchainUtils
 class ProofOfStake:
     def __init__(self):
         self.stakers = {}
-        self.set_genesis_node_stake()
+        #self.set_genesis_node_stake()
 
     def set_genesis_node_stake(self):
         with open("./keys/genesis_public_key.pem", "rb") as key_file:
@@ -49,6 +49,7 @@ class ProofOfStake:
         return winner_lot
 
     def forger(self, last_block_hash):
+        print("STAKERS",len(self.stakers))
         lots = self.validator_lots(last_block_hash)
         winner_lot = self.winner_lot(lots, last_block_hash)
         return winner_lot.public_key

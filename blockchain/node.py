@@ -23,19 +23,26 @@ class Node:
         self.transaction_pool = TransactionPool()
         self.wallet = Wallet()
         self.blockchain = Blockchain()
+
+
         self.hippocampus = Hippocampus(self.port) #HIPPOCAMPUS
         self.blockchain.blocks = self.hippocampus.dejavu() #HIPPOCAMPUS
         if key:
             self.wallet.from_key(key)
+            self.blockchain.pos.update(self.wallet.public_key_string(),1)
 
     def start_p2p(self):
-        self.p2p = SocketCommunication(self.ip, self.port)
+        self.p2p = SocketCommunication(self.ip, self.port,self.wallet.public_key_string())
         self.p2p.start_socket_communication(self)
 
     def start_node_api(self, api_port):
         self.api = NodeAPI()
         self.api.inject_node(self)
         self.api.start(self.ip, api_port)
+
+    def add_stakers(self,list_of_ns):
+        for n in list_of_ns:
+            self.blockchain.pos.update(n,1)
 
     #TESTE diminuição de eco
     def handle_transaction_self(self, transaction):

@@ -6,7 +6,7 @@ from blockchain.utils.helpers import BlockchainUtils
 
 
 def seeds_from_30(client,user="nouser"):
-    numdays = 1
+    numdays = 999
 
     base = datetime.datetime(datetime.datetime.now().year,datetime.datetime.now().month,datetime.datetime.now().day)
     date_list = [base - datetime.timedelta(days=x) for x in range(numdays+1)]
