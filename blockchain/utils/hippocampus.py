@@ -40,7 +40,7 @@ class Hippocampus:
 
         self.dados.append(dill.dumps(block))
         self.salvar_memoria()
-        print(f"Bloco {len(self.dados)} adicionado com sucesso!")
+        print(f"Bloco adicionado com sucesso!")
 
     def dejavu(self):
         print("DEJAVU BLOCKS")

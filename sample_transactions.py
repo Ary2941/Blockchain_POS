@@ -6,7 +6,7 @@ from blockchain.utils.helpers import BlockchainUtils
 
 
 def seeds_from_30(client,user="nouser"):
-    numdays = 9
+    numdays = 1000
 
     base = datetime.datetime(datetime.datetime.now().year,datetime.datetime.now().month,datetime.datetime.now().day)
     date_list = [base - datetime.timedelta(days=x) for x in range(numdays+1)]
@@ -32,7 +32,7 @@ def post_transaction(sender, amount=None, type=None,employee_id=None,location=No
 
 
 if __name__ == "__main__":
-    Portgoal = 8051
+    Portgoal = 8050
 
     john = Wallet()
     john.from_key("./keys/node1_private_key.pem")

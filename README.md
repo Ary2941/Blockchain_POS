@@ -66,13 +66,14 @@ Exemplo:
 
 __(1707680000−1707645000)/3600 = 9.5 horas__
 
+## Executando
 
-## Instalando dependências
+### Instalando dependências
 ```sh
 pip install -r requirements/dev.txt
 ```
 
-## Executando nós
+### Executando nós
 ```sh
 # Terminal 1
 cd blockchain ; python run_node.py --ip=localhost --node_port=8010 --api_port=8050 --key_file=./keys/genesis_private_key.pem ; cd ..
@@ -80,13 +81,25 @@ cd blockchain ; python run_node.py --ip=localhost --node_port=8010 --api_port=80
 cd blockchain ; python run_node.py --ip=localhost --node_port=8011 --api_port=8051 --key_file=./keys/node1_private_key.pem ; cd ..
 # Terminal 3
 cd blockchain ; python run_node.py --ip=localhost --node_port=8012 --api_port=8052 --key_file=./keys/node2_private_key.pem ; cd ..
-# populate with seeds
-cd blockchain ; python sample_transactions.py ; cd ..
-# test routes
-cd frontend ; python app.py ; cd ..
-# test relatory
-http://127.0.0.1:5000/relatory?employee_id={employee_id}&architects={employee_id,...}start={dd/mm/YYYY}&end={dd/mm/YYYY}
 ```
+### OU rode pelo docker 
+
+```sh
+docker-compose up -d
+```
+
+### populate with seeds
+```sh
+cd blockchain ; python sample_transactions.py ; cd ..
+```
+
+### test routes
+```sh
+cd frontend ; python app.py ; cd ..
+```
+
+### test relatory
+http://127.0.0.1:5000/relatory?employee_id={employee_id}&architects={employee_id,...}start={dd/mm/YYYY}&end={dd/mm/YYYY}
 
 
 __Visualizar a blockchain pelo nó com a node_port fornecida__

@@ -37,7 +37,6 @@ class Node:
         self.api = NodeAPI()
         self.api.inject_node(self)
         self.api.start(self.ip, api_port)
-
     #TESTE diminuição de eco
     def handle_transaction_self(self, transaction):
         data = transaction.payload()
@@ -164,7 +163,7 @@ class Node:
         return self.blockchain
 
     def handle_blockchain_request(self, requesting_node,data):
-        print(f"{requesting_node.port} is requesting blockchain {data} (ours: {len(self.blockchain.blocks)})")
+        print(f"{requesting_node.port} is requesting blockchain {data} (ours: {len(self.blockchain.blocks)-1})")
         message = Message(self.p2p.socket_connector, "BLOCKCHAIN", copy.deepcopy(self.blockchain)) #se blockdup: trocar self.blockchain por self.nogemini()
         encoded_message = BlockchainUtils.encode(message)
         self.p2p.send(requesting_node, encoded_message)
@@ -216,7 +215,6 @@ class Node:
         self.p2p.broadcast(encoded_message)
         print(f"[PING] Enviado")
         
-
     def send_ping(self, target_node):
         """
         Envia uma mensagem de PING para um nó alvo.
